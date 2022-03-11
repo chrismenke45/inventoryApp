@@ -1,0 +1,18 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    header 
+      nav 
+        ul 
+          li 
+            a(href='/inventory/items') Shop By Item 
+          li 
+            a(href='/inventory/categorys') Shop By Category 
+          li 
+            a(href='/inventory/item/create') Add Item to Shop 
+          li 
+            a(href='/inventory/category/create') Create Item Category
+  block content

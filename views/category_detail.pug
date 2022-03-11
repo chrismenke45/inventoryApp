@@ -1,0 +1,19 @@
+extends layout
+
+block content 
+  h1= category.name
+  p= category.description
+  br
+  if category_items
+    dl 
+      each item in category_items 
+        dt 
+          a(href=item.url) #{item.name}
+        dd   #{item.description} 
+  else 
+    p This category has no items
+  hr
+  p 
+    a(href=category.url+'/update') Update Category
+  p 
+    a(href=category.url+'/delete') Delete Category

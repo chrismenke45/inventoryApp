@@ -1,0 +1,13 @@
+extends layout
+
+block content
+  h1= item.name
+  a(href=category.url) #{category.name}
+  p $#{item.price} Remaining:#{item.number_in_stock}
+  p= item.description 
+
+  hr
+  p 
+    a(href=item.url+'/update') Update Item
+  p 
+    a(href=item.url+'/delete') Delete Item

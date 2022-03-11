@@ -1,0 +1,32 @@
+extends layout
+
+block content
+  h1=title
+
+  form(method='POST' action='')
+    div.formGroup
+      label(for='name') Category Name:
+      input#categoryName(type='text' placeholder='Item Name' name='name' required='true' value=(undefined===item ? '' : item.name) )
+    div.formGroup
+      label(for='description') Description:
+      textarea#description(type='textarea' placeholder='Description' name='description' required='true') #{undefined===item ? '' : item.description}
+    div.formGroup
+        label(for='category') Category:
+        select(type='select', placeholder='Select category' name='category' required='true' )
+            - categorys.sort(function(a, b) {let textA = a.name.toUpperCase(); let textB = b.name.toUpperCase(); return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;});
+            for category in categorys
+                if item
+                    option(value=category._id selected=(category._id.toString()===item.category._id.toString() ? 'selected' : false) ) #{category.name}
+                else
+                    option(value=category._id) #{category.name}
+    div.formGroup
+      label(for='price') Price:
+      input#description(type='number' placeholder='Price' name='price' required='true' value=(undefined===item ? '' : item.price))
+    div.formGroup
+      label(for='number_in_stock') Number in Stock:
+      input#description(type='number' placeholder='Number in Stock' name='number_in_stock' required='true' value=(undefined===item ? '' : item.number_in_stock))
+    button(type='submit') Submit
+  if errors
+    ul
+      for error in errors
+        li!= error.msg

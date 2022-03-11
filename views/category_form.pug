@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  h1=title
+
+  form(method='POST' action='')
+    div.formGroup
+      label(for='name') Category Name:
+      input#categoryName(type='text' placeholder='Category Name' name='name' required='true' value=(undefined===category ? '' : category.name) )
+    div.formGroup
+      label(for='description') Description:
+      textarea#description(type='textarea' placeholder='Description' name='description' required='true') #{undefined===category ? '' : category.description}
+    button(type='submit') Submit
+  if errors
+    ul
+      for error in errors
+        li!= error.msg
