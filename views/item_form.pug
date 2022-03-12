@@ -3,7 +3,7 @@ extends layout
 block content
   h1=title
 
-  form(method='POST' action='')
+  form(method='POST' action='' enctype="multipart/form-data")
     div.formGroup
       label(for='name') Category Name:
       input#categoryName(type='text' placeholder='Item Name' name='name' required='true' value=(undefined===item ? '' : item.name) )
@@ -22,6 +22,13 @@ block content
     div.formGroup
       label(for='price') Price:
       input#description(type='number' placeholder='Price' name='price' required='true' value=(undefined===item ? '' : item.price))
+    div.formGroup
+      if (item && item.img.data)
+        label(for='image') Replacement Image (do not add image if you wish to keep the current image):
+        input(type="file" name="image" accept="image/*") 
+      else
+        label(for='image') Image:
+        input(type="file" name="image" accept="image/*") 
     div.formGroup
       label(for='number_in_stock') Number in Stock:
       input#description(type='number' placeholder='Number in Stock' name='number_in_stock' required='true' value=(undefined===item ? '' : item.number_in_stock))

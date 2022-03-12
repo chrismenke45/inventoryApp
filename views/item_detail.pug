@@ -4,6 +4,8 @@ block content
   h1= item.name
   a(href=category.url) #{category.name}
   p $#{item.price} Remaining:#{item.number_in_stock}
+  if item.img.data
+    img(src=('data:image/' + item.img.contenttype + ';base64,' + item.img.data.toString('base64')))
   p= item.description 
 
   hr

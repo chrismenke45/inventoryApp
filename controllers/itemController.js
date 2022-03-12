@@ -2,8 +2,30 @@ var Item = require('../models/item');
 var Category = require('../models/category')
 var async = require('async')
 const { body, validationResult } = require('express-validator');
-const category = require('../models/category');
-const item = require('../models/item');
+
+var path = require('path');
+
+
+var multer = require('multer');
+
+
+
+
+var storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './uploads/')
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + '-' + Date.now())
+    }
+});
+
+  
+var upload = multer({ storage: storage });
+
+
+var fs = require('fs');
+
 
 // Display home-page
 exports.index = function (req, res) {
@@ -38,16 +60,6 @@ exports.item_detail = function (req, res) {
 // Display item create form on GET.
 exports.item_create_get = function (req, res, next) {
 
-    // Get all authors and genres, which we can use for adding to our book.
-    /* async.parallel({
-         catgeorys: function(callback) {
-             Category.find(callback);
-         },
-         
-        }, function(err, results) {
-         if (err) { return next(err); }
-         res.render('book_form', { title: 'Create Book', authors: results.authors, genres: results.genres });
-     });*/
     Category.find({}, 'name description')
         .sort({ name: 1 })
         .exec(function (err, categorys) {
@@ -58,6 +70,8 @@ exports.item_create_get = function (req, res, next) {
 
 // Handle item create on POST.
 exports.item_create_post = [
+
+    upload.single('image'),
 
     // Validate and sanitize fields.
     body('name').trim().isLength({ min: 1, max: 30 }).escape().withMessage('Category must be specified with more the 1 character and less then 30 characters.'),
@@ -72,6 +86,7 @@ exports.item_create_post = [
 
         // Extract the validation errors from a request.
         const errors = validationResult(req);
+        
 
         // Create an Item object with escaped and trimmed data.
         var item = new Item(
@@ -80,6 +95,10 @@ exports.item_create_post = [
                 description: req.body.description,
                 category: req.body.category,
                 price: req.body.price,
+                img: {
+                    data: (req.file ? fs.readFileSync(path.join(__dirname, '..', 'uploads' , req.file.filename)) : null),
+                    contentType: 'image/png'
+                },
                 number_in_stock: req.body.number_in_stock,
             });
 
@@ -141,7 +160,6 @@ exports.item_update_get = function (req, res, next) {
         if (results.item == null) {
             var err = new Error('Item not found');
             err.status = 404;
-            console.log(results)
             return next(err);
         }
         res.render('item_form', { title: 'Update Item', item: results.item, categorys: results.categorys, })
@@ -152,6 +170,9 @@ exports.item_update_get = function (req, res, next) {
 
 // Handle item update on POST.
 exports.item_update_post = [
+
+    upload.single('image'),
+
     body('name').trim().isLength({ min: 1, max: 30 }).escape().withMessage('Category must be specified with more the 1 character and less then 30 characters.'),
     body('description').trim().isLength({ min: 1 }).escape().withMessage('Description must be specified.'),
     body('category', 'Category must not be empty').trim().isLength({ min: 1 }).escape(),
@@ -168,6 +189,10 @@ exports.item_update_post = [
                 description: req.body.description,
                 category: req.body.category,
                 price: req.body.price,
+                img: {
+                    data: (req.file ? fs.readFileSync(path.join(__dirname, '..', 'uploads' , req.file.filename)) : null),
+                    contentType: 'image/png'
+                },
                 number_in_stock: req.body.number_in_stock,
                 _id: req.params.id,
             });
